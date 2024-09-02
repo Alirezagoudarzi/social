@@ -5,8 +5,10 @@ from django.shortcuts import render,redirect
 from django.views import View
 from .forms import UserRegistrationForm,UserLoginForm
 from django.contrib.auth.models import User
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.contrib.auth import login,logout,authenticate
+
 
 
 
@@ -71,7 +73,7 @@ class UserloginView(View):
             return render(request,self.template_name,{'form':form})
 
 
-class UserLogoutView(View):
+class UserLogoutView(LoginRequiredMixin,View):
     def get(self,request):
         logout(request)
         messages.success(request,'User logout successfully!','success')
