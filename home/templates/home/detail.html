@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+    <h2>Post Detail</h2>
+    <div class="card">
+        <br>
+        <h3>{{post.title}}</h3>
+        <small>{{post.updated}}</small>
+        <br>
+        <small>Written by {{post.user.username}}</small>
+        <hr>
+        <small>{{post.body}}</small>
+
+
+{% endblock content %}
+
+
