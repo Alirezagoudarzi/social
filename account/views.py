@@ -1,3 +1,6 @@
+from typing import Any
+from django.http import HttpRequest
+from django.http.response import HttpResponse as HttpResponse
 from django.shortcuts import render,redirect
 from django.views import View
 from .forms import UserRegistrationForm,UserLoginForm
@@ -15,6 +18,12 @@ class UserRegisterView(View):
 
     form_class=UserRegistrationForm
     template_name='account/register.html'
+
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        if request.user.is_authenticated:
+            messages.error(request,'you are loggedin. this request is nat valid.','warning')
+            return redirect('home:home')
+        return super().dispatch(request, *args, **kwargs)
 
     def get(self,request):
         form=self.form_class()
@@ -36,6 +45,14 @@ class UserloginView(View):
 
     form_class=UserLoginForm
     template_name='account/login.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            messages.error(request,'you are loggedin. this request is nat valid.','warning')
+            return redirect('home:home')
+        return super().dispatch(request, *args, **kwargs)
+    
+
 
     def get(self,request):
         form=self.form_class 
