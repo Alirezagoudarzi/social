@@ -5,7 +5,8 @@
     <h2>Posts page</h2>
     {% for post in posts  %}
         <div class="card">
-            <a href="{% url "home:post_detail" post.id post.slug %}" class="card-body"> {{post.title}} </a>
+            <a href="{{post.get_absolute_url}}" class="card-body"> {{post.title}} </a>
+            {% comment %} <a href="{% url "home:post_detail" post.id post.slug %}" class="card-body"> {{post.title}} </a> {% endcomment %}
         </div>
     {% endfor %}
 {% endblock content %}
