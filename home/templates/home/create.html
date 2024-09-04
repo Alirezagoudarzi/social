@@ -2,12 +2,16 @@
 
 {% block content %}
 
+<h3>Create new post</h3><br>
 
+<form method="POST" class="col-md-5">
+    
+    {% csrf_token %}
+    {{form.as_p}}
+    
+    <input type="submit" Value="Create" class="btn btn-primary"></input>
 
-
-
-
-
+</form>
 
 
 

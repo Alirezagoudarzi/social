@@ -7,3 +7,8 @@ class PostUpdateForm(ModelForm):
         model=Post
         fields=('title','body')
 
+
+class PostCreateForm(ModelForm):
+    class Meta:
+        model=Post
+        fields=('title','body')

@@ -5,6 +5,13 @@
 
        <h2 class='text-center'> All posts of {{user.username}} </h2>
         
+        {% if request.user.id == user.id %}
+        
+            <a href="{% url "home:post_create" %}" class="btn btn-primary">create new post</a><br><br>
+
+
+        {% endif %}
+
         {% for post in posts  %}
             <div class="card">
                 {% comment %} <a href="{% url "home:post_detail" post.id post.slug %}" class="card-body"> {{post.title}} </a> {% endcomment %}
