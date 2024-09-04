@@ -3,17 +3,17 @@ from django.http import HttpRequest
 from django.http.response import HttpResponse as HttpResponse
 from django.shortcuts import render,redirect,get_list_or_404,get_object_or_404
 from django.views import View
-from .forms import UserRegistrationForm,UserLoginForm
-from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib import messages
 from django.contrib.auth import login,logout,authenticate
-from home.models import Post
 from django.contrib.auth import views as auth_views
+from django.contrib import messages
 from django.urls import reverse_lazy
 
+from home.models import Post
+from account.models import RelationsModel
+from django.contrib.auth.models import User
 
-
+from .forms import UserRegistrationForm,UserLoginForm
 
 
 # Create your views here.
@@ -85,10 +85,16 @@ class UserLogoutView(LoginRequiredMixin,View):
 
 class UserProfileView(LoginRequiredMixin,View):
     def get(self,request,user_id):
+        is_following=False # in ro baraie in gozashtim ke badan az ruie in motaghaier befahmim karbar ro follow kardim ya na? 
+        # va inke dokme follow ro behesh neshoon bedim ya unfollow
         user=get_object_or_404(User,pk=user_id)
         # user=User.objects.get(pk=user_id)
-        posts=Post.objects.filter(user=user)
-        return render(request,'account/profile.html',{'user': user,'posts':posts})
+        # posts=Post.objects.filter(user=user)
+        posts=user.posts.all()
+        relation=RelationsModel.objects.filter(from_user=request.user.id,to_user=user_id)
+        if relation.exists():
+            is_following=True
+        return render(request,'account/profile.html',{'user': user,'posts':posts,'is_following':is_following})
 
 
 
@@ -107,3 +113,63 @@ class UserPasswordResetConfirmView(auth_views.PasswordResetConfirmView):
 
 class UserPasswordResetCompleteView(auth_views.PasswordResetCompleteView):
     template_name='account/password_reset_complete.html'
+
+
+
+class UserFollowView(LoginRequiredMixin,View):
+    def get(self,request,user_id): #user_id = user kasi ke dram profilesh ro mibinam
+        user=User.objects.get(id=user_id) #User ke mikham follow konam ro miyaram
+        relation=RelationsModel.objects.filter(from_user=request.user.id,to_user=user_id)
+        if relation.exists():
+            messages.error(request,'you are already following this user','danger')
+        else:
+            RelationsModel.objects.create(from_user=request.user,to_user=user) # ham from_user ham to_user ForeignKey hastan pas bayad object kamel beheshoon bedim
+            messages.success(request,"you followed this user",'success')
+        return redirect('account:user_profile' ,user_id)
+
+
+
+
+class UserUnfollowView(LoginRequiredMixin,View):
+    def get(self,request,user_id):
+        user=User.objects.get(id=user_id)
+        relation=RelationsModel.objects.filter(from_user=request.user,to_user=user) # ham from_user ham to_user ForeignKey hastan pas bayad object kamel beheshoon bedim
+        if relation.exists():
+            relation.delete()
+            messages.success(request,'you unfollowd this user successfully','success')
+        else:
+            messages.error(request,'you are not following this user','danger')
+
+        return redirect('account:user_profile',user_id)
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
