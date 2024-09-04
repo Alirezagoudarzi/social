@@ -132,3 +132,13 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'account.authenticate.EmailBackend',
 ]
+
+
+#google account
+
+EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST='smtp.gmail.com'
+EMAIL_HOST_USER='arg.7ty7@gmail.com'
+EMAIL_HOST_PASSWORD='anbaqpkzucvbbgkq'
+EMAIL_USE_TLS=True
+DEFAULT_FROM_EMAIL='Stackoverflow website'

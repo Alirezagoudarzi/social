@@ -7,6 +7,7 @@
     <form method="post" class="col-md-5">
         {% csrf_token %}
         {{form.as_p}}
+    <a href="{% url "account:reset _password" %}">Forget password!</a><br><br>
     <input type="submit" value="Login" class="btn btn-primary"></input>
     </form>
 
