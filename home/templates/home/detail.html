@@ -8,9 +8,20 @@
         <h3>{{post.title}}</h3>
         <small>{{post.updated}}</small>
         <br>
-        <small>Written by {{post.user.username}}</small>
+        <small>Written by <a href="{% url "account:user_profile" post.user.id %}">{{post.user.username}}</a></small>
         <hr>
         <small>{{post.body}}</small>
+        <br>
+        {% if request.user.id == post.user.id %}
+            <hr>
+            <p>
+                <a href="{% url "home:post_delete" post.id %}" class="btn btn-danger">Delete</a>
+                <a href="{% url "home:post_update" post.id %}" class="btn btn-info">Update</a>
+            </p>
+        {% endif %}
+        
+        
+    <div>
 
 
 {% endblock content %}
