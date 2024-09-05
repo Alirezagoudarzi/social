@@ -19,6 +19,23 @@
                 <a href="{% url "home:post_update" post.id %}" class="btn btn-info">Update</a>
             </p>
         {% endif %}
+
+
+        {% comment %} show comment {% endcomment %}
+            <hr>
+            {{comments.count}} comments<br><br>
+            {% for comment in comments  %}
+            
+                <div class="card bg-dark text-white">
+                    <p class="card-header">{{comment.user}}  |  {{comment.created|timesince}} </p>
+                    <p class="card-body">{{comment.body}}</p>
+                </div>
+            {% empty %}
+            <div class="card bg-dark text-white">
+                <p class="card-header">without comment </p>
+            </div>
+            {% endfor %}
+
         
         
     <div>
