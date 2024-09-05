@@ -50,6 +50,12 @@ class UserloginView(View):
     form_class=UserLoginForm
     template_name='account/login.html'
 
+    def setup(self, request: HttpRequest, *args: Any, **kwargs: Any) -> None:
+        self.next=request.GET.get('next')
+        return super().setup(request, *args, **kwargs)
+    
+
+
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             messages.error(request,'you are loggedin. this request is nat valid.','warning')
@@ -70,6 +76,10 @@ class UserloginView(View):
             if user is not None:
                 login(request,user)
                 messages.success(request,'User login successfully','success')
+                
+                if self.next:
+                    return redirect(self.next)
+                
                 return redirect('home:home')
             messages.error(request,'Username or Password is wrong!','warning')
             return render(request,self.template_name,{'form':form})
