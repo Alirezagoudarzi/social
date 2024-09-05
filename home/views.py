@@ -3,11 +3,16 @@ from django.http import HttpRequest
 from django.http.response import HttpResponse as HttpResponse
 from django.shortcuts import render,redirect,get_object_or_404
 from django.views import View
-from .models import Post
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
-from .form import PostUpdateForm,PostCreateForm
 from django.utils.text import slugify
+
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+
+from .models import Post,CommentModel
+
+from .form import PostUpdateForm,PostCreateForm,CommentCreateForm
 
 
 # Create your views here.
@@ -18,10 +23,26 @@ class HomeView(View):
     
 
 class PostDetailView(View):
+
+    form_class=CommentCreateForm
+
     def get(self,request,post_id,post_slug):
         post=get_object_or_404(Post,pk=post_id,slug=post_slug) # post=Post.objects.get(pk=post_id,slug=post_slug)
         comments=post.pcomments.filter(is_reply=False) #comment asli hastan ro biyar na comment haie reply ro
-        return render(request,'home/detail.html',{'post':post,'comments':comments})
+        return render(request,'home/detail.html',{'post':post,'comments':comments,'form':self.form_class})
+
+    @method_decorator(login_required)
+    def post(self,request,post_id,post_slug):
+            form=self.form_class(request.POST)
+            post_instance=get_object_or_404(Post,pk=post_id,slug=post_slug)
+            if form.is_valid():
+                new_comment=form.save(commit=False)
+                new_comment.user=request.user
+                new_comment.post= post_instance
+                new_comment.save()
+                messages.success(request,'your comment submited successfully.','success')
+                return redirect('home:post_detail',post_id,post_slug)
+
 
 
 class PostDeleteView(LoginRequiredMixin,View):

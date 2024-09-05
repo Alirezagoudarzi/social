@@ -21,6 +21,18 @@
         {% endif %}
 
 
+        {% comment %} show comment form  {% endcomment %}
+        <hr>
+            {% if request.user.is_authenticated %}
+                <form method='POST' action="" >
+                    {% csrf_token %}
+                    {{form.as_p}}
+                    <input type="submit" value="Send" class="btn btn-primary"></input>
+                </form>
+            {% else %}
+                <p class= "alert alert-info">Only logged in users can register comment.</p>
+            {% endif %}
+
         {% comment %} show comment {% endcomment %}
             <hr>
             {{comments.count}} comments<br><br>
